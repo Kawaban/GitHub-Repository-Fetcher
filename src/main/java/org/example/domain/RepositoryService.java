@@ -9,7 +9,7 @@ import lombok.val;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.example.dto.BranchResultDto;
 import org.example.dto.GitHubApiBranchDto;
-import org.example.dto.GitHunApiRepositoryDto;
+import org.example.dto.GitHubApiRepositoryDto;
 import org.example.dto.RepositoryResultDto;
 
 @ApplicationScoped
@@ -20,10 +20,10 @@ public class RepositoryService {
     public Uni<List<RepositoryResultDto>> getRepositories(String user) {
         val uniRepos = gitHubApiClient.getRepositories(user);
 
-        val uniReposAndBranches = uniRepos.onItem().transform((List<GitHunApiRepositoryDto> repositories) -> {
-            List<Uni<Tuple2<List<GitHubApiBranchDto>, GitHunApiRepositoryDto>>> reposAndBranches = new ArrayList<>();
+        val uniReposAndBranches = uniRepos.onItem().transform((List<GitHubApiRepositoryDto> repositories) -> {
+            List<Uni<Tuple2<List<GitHubApiBranchDto>, GitHubApiRepositoryDto>>> reposAndBranches = new ArrayList<>();
 
-            for (GitHunApiRepositoryDto repo : repositories) {
+            for (GitHubApiRepositoryDto repo : repositories) {
                 if (!repo.isFork()) {
                     val uniBranches = gitHubApiClient.getBranches(user, repo.getName());
                     reposAndBranches.add(Uni.combine()
@@ -38,13 +38,13 @@ public class RepositoryService {
         return uniReposAndBranches
                 .onItem()
                 .transformToUni(
-                        (List<Uni<Tuple2<List<GitHubApiBranchDto>, GitHunApiRepositoryDto>>> reposAndBranches) ->
+                        (List<Uni<Tuple2<List<GitHubApiBranchDto>, GitHubApiRepositoryDto>>> reposAndBranches) ->
                                 Uni.combine().all().unis(reposAndBranches).with((tuples) -> {
                                     List<RepositoryResultDto> repositoryResultDtoList = new ArrayList<>();
 
                                     for (Object tuple : tuples) {
-                                        Tuple2<List<GitHubApiBranchDto>, GitHunApiRepositoryDto> repoAndBranch =
-                                                (Tuple2<List<GitHubApiBranchDto>, GitHunApiRepositoryDto>) tuple;
+                                        Tuple2<List<GitHubApiBranchDto>, GitHubApiRepositoryDto> repoAndBranch =
+                                                (Tuple2<List<GitHubApiBranchDto>, GitHubApiRepositoryDto>) tuple;
 
                                         List<BranchResultDto> branchData = new ArrayList<>();
                                         for (GitHubApiBranchDto b : repoAndBranch.getItem1()) {

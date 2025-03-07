@@ -7,7 +7,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 
 @QuarkusTest
-class GitHunApiRepositoryDtoResourceTest {
+class GitHubApiRepositoryDtoResourceTest {
     @Test
     void testHelloEndpoint() {
         given().when().get("/hello").then().statusCode(200).body(is("Hello from Quarkus REST"));

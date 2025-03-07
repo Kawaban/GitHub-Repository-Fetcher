@@ -8,14 +8,14 @@ import jakarta.ws.rs.PathParam;
 import java.util.List;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.example.dto.GitHubApiBranchDto;
-import org.example.dto.GitHunApiRepositoryDto;
+import org.example.dto.GitHubApiRepositoryDto;
 
 @ApplicationScoped
 @RegisterRestClient(configKey = "github-api")
 public interface GitHubApiClient {
     @Path("/users/{user}/repos")
     @GET
-    Uni<List<GitHunApiRepositoryDto>> getRepositories(@PathParam("user") String user);
+    Uni<List<GitHubApiRepositoryDto>> getRepositories(@PathParam("user") String user);
 
     @Path("/repos/{user}/{repository}/branches")
     @GET
