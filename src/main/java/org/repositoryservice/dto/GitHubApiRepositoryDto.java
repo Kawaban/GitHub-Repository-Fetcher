@@ -1,10 +1,18 @@
-package org.example.dto;
+package org.repositoryservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GitHubApiRepositoryDto {
+    public GitHubApiRepositoryDto(String name, String ownerLogin, Boolean fork) {
+        this.name = name;
+        this.ownerLogin = ownerLogin;
+        this.fork = fork;
+    }
+
+    public GitHubApiRepositoryDto() {
+    }
 
     @JsonProperty("name")
     private String name;

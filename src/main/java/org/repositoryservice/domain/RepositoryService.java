@@ -1,4 +1,4 @@
-package org.example.domain;
+package org.repositoryservice.domain;
 
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.val;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.example.dto.BranchResultDto;
-import org.example.dto.GitHubApiBranchDto;
-import org.example.dto.GitHubApiRepositoryDto;
-import org.example.dto.RepositoryResultDto;
+import org.repositoryservice.dto.BranchResultDto;
+import org.repositoryservice.dto.GitHubApiBranchDto;
+import org.repositoryservice.dto.GitHubApiRepositoryDto;
+import org.repositoryservice.dto.RepositoryResultDto;
 
 @ApplicationScoped
 public class RepositoryService {

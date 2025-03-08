@@ -1,4 +1,4 @@
-package org.example.dto;
+package org.repositoryservice.dto;
 
 import java.util.List;
 

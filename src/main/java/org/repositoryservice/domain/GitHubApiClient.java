@@ -1,4 +1,4 @@
-package org.example.domain;
+package org.repositoryservice.domain;
 
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -7,8 +7,8 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import java.util.List;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
-import org.example.dto.GitHubApiBranchDto;
-import org.example.dto.GitHubApiRepositoryDto;
+import org.repositoryservice.dto.GitHubApiBranchDto;
+import org.repositoryservice.dto.GitHubApiRepositoryDto;
 
 @ApplicationScoped
 @RegisterRestClient(configKey = "github-api")

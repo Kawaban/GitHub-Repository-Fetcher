@@ -1,4 +1,4 @@
-package org.example.domain;
+package org.repositoryservice.domain;
 
 import io.smallrye.mutiny.Uni;
 import jakarta.ws.rs.GET;
@@ -8,8 +8,8 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
-import org.example.dto.ErrorDto;
-import org.example.dto.RepositoryResultDto;
+import org.repositoryservice.dto.ErrorDto;
+import org.repositoryservice.dto.RepositoryResultDto;
 
 @Path("/api/repos")
 public class RepositoryResource {

@@ -1,4 +1,4 @@
-package org.example.dto;
+package org.repositoryservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,6 +7,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class GitHubApiBranchDto {
     @JsonProperty("name")
     private String name;
+
+    public GitHubApiBranchDto() {
+    }
+
+    public GitHubApiBranchDto(String lastCommitSha, String name) {
+        this.lastCommitSha = lastCommitSha;
+        this.name = name;
+    }
 
     @JsonProperty("commit")
     private void unpackCommitShaFromNestedObject(Object commit) {
