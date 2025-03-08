@@ -1,7 +1,6 @@
 package org.example.domain;
 
 import io.smallrye.mutiny.Uni;
-import io.smallrye.mutiny.tuples.Tuple2;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,42 +20,32 @@ public class RepositoryService {
         val uniRepos = gitHubApiClient.getRepositories(user);
 
         val uniReposAndBranches = uniRepos.onItem().transform((List<GitHubApiRepositoryDto> repositories) -> {
-            List<Uni<Tuple2<List<GitHubApiBranchDto>, GitHubApiRepositoryDto>>> reposAndBranches = new ArrayList<>();
-
+            List<Uni<RepositoryResultDto>> reposAndBranches = new ArrayList<>();
             for (GitHubApiRepositoryDto repo : repositories) {
                 if (!repo.isFork()) {
                     val uniBranches = gitHubApiClient.getBranches(user, repo.getName());
-                    reposAndBranches.add(Uni.combine()
-                            .all()
-                            .unis(uniBranches, Uni.createFrom().item(repo))
-                            .asTuple());
+                    reposAndBranches.add(uniBranches
+                            .onItem()
+                            .transform((List<GitHubApiBranchDto> branches) -> new RepositoryResultDto(
+                                    repo.getName(),
+                                    repo.getOwnerLogin(),
+                                    branches.stream()
+                                            .map(b -> new BranchResultDto(b.getName(), b.getLastCommitSha()))
+                                            .toList())));
                 }
             }
             return reposAndBranches;
         });
 
-        return uniReposAndBranches
-                .onItem()
-                .transformToUni(
-                        (List<Uni<Tuple2<List<GitHubApiBranchDto>, GitHubApiRepositoryDto>>> reposAndBranches) ->
-                                Uni.combine().all().unis(reposAndBranches).with((tuples) -> {
-                                    List<RepositoryResultDto> repositoryResultDtoList = new ArrayList<>();
-
-                                    for (Object tuple : tuples) {
-                                        Tuple2<List<GitHubApiBranchDto>, GitHubApiRepositoryDto> repoAndBranch =
-                                                (Tuple2<List<GitHubApiBranchDto>, GitHubApiRepositoryDto>) tuple;
-
-                                        List<BranchResultDto> branchData = new ArrayList<>();
-                                        for (GitHubApiBranchDto b : repoAndBranch.getItem1()) {
-                                            branchData.add(new BranchResultDto(b.getName(), b.getLastCommitSha()));
-                                        }
-
-                                        repositoryResultDtoList.add(new RepositoryResultDto(
-                                                repoAndBranch.getItem2().getName(),
-                                                repoAndBranch.getItem2().getOwnerLogin(),
-                                                branchData));
-                                    }
-                                    return repositoryResultDtoList;
-                                }));
+        return uniReposAndBranches.onItem().transformToUni(reposAndBranches -> Uni.combine()
+                .all()
+                .unis(reposAndBranches)
+                .with((repos) -> {
+                    List<RepositoryResultDto> result = new ArrayList<>();
+                    for (Object repo : repos) {
+                        result.add((RepositoryResultDto) repo);
+                    }
+                    return result;
+                }));
     }
 }
