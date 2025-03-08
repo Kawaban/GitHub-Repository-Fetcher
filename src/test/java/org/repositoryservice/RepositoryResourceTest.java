@@ -23,7 +23,7 @@ class RepositoryResourceTest {
     GitHubApiClient gitHubApiClient;
 
     @Test
-    void testGetRepositoriesByUser() {
+    void testGetNonForkRepositoriesByUser() {
 
         String user = "testuser";
 
@@ -50,7 +50,6 @@ class RepositoryResourceTest {
         Mockito.when(gitHubApiClient.getRepositories(user))
                 .thenReturn(Uni.createFrom().item(List.of(repo1, repo2, repo3, repo4, repo5)));
 
-
         Mockito.when(gitHubApiClient.getBranches(user, "repo1"))
                 .thenReturn(Uni.createFrom().item(List.of(branch1, branch2, branch3)));
 
@@ -73,7 +72,7 @@ class RepositoryResourceTest {
                 .statusCode(200)
                 .body("$.size()", is(3)) // Only non-forked repos should be returned (repo1, repo2, repo4)
 
-                // Repo 1
+
                 .body("[0].name", is("repo1"))
                 .body("[0].owner", is("testuser"))
                 .body("[0].branches.size()", is(3))
@@ -84,14 +83,14 @@ class RepositoryResourceTest {
                 .body("[0].branches[2].name", is("feat/some-feature"))
                 .body("[0].branches[2].lastCommitSha", is("commit-sha-883"))
 
-                // Repo 2
+
                 .body("[1].name", is("repo2"))
                 .body("[1].owner", is("testuser"))
                 .body("[1].branches.size()", is(1))
                 .body("[1].branches[0].name", is("main"))
                 .body("[1].branches[0].lastCommitSha", is("commit-sha-452"))
 
-                // Repo 4
+
                 .body("[2].name", is("repo4"))
                 .body("[2].owner", is("testuser"))
                 .body("[2].branches.size()", is(0));

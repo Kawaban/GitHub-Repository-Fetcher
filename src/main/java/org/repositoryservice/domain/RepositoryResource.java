@@ -23,7 +23,7 @@ public class RepositoryResource {
     @GET
     @Path("/{user}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Uni<Response> getRepositoriesByUser(@PathParam("user") String user) {
+    public Uni<Response> getNonForkRepositoriesByUser(@PathParam("user") String user) {
         Uni<List<RepositoryResultDto>> uniResult = repositoryService.getRepositories(user);
         return uniResult
                 .onItem()
@@ -32,8 +32,8 @@ public class RepositoryResource {
                 .recoverWithItem(this::handleFailure);
     }
 
-    private Response handleFailure(Throwable f) {
-        if (f.getMessage().contains("404")) {
+    private Response handleFailure(Throwable failure) {
+        if (failure.getMessage().contains("Not Found, status code 404")) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(new ErrorDto("User doesn't exists", 404))
                     .build();

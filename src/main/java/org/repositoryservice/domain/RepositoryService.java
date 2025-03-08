@@ -19,12 +19,13 @@ public class RepositoryService {
     public Uni<List<RepositoryResultDto>> getRepositories(String user) {
         val uniRepos = gitHubApiClient.getRepositories(user);
 
-        val uniReposAndBranches = uniRepos.onItem().transform((List<GitHubApiRepositoryDto> repositories) -> {
-            List<Uni<RepositoryResultDto>> reposAndBranches = new ArrayList<>();
+        val uniListOfUniResult = uniRepos.onItem().transform((List<GitHubApiRepositoryDto> repositories) -> {
+
+            List<Uni<RepositoryResultDto>> listOfUniResult = new ArrayList<>();
             for (GitHubApiRepositoryDto repo : repositories) {
                 if (!repo.isFork()) {
                     val uniBranches = gitHubApiClient.getBranches(user, repo.getName());
-                    reposAndBranches.add(uniBranches
+                    listOfUniResult.add(uniBranches
                             .onItem()
                             .transform((List<GitHubApiBranchDto> branches) -> new RepositoryResultDto(
                                     repo.getName(),
@@ -34,18 +35,19 @@ public class RepositoryService {
                                             .toList())));
                 }
             }
-            return reposAndBranches;
+
+            return listOfUniResult;
         });
 
-        return uniReposAndBranches.onItem().transformToUni(reposAndBranches -> Uni.combine()
+        return uniListOfUniResult.onItem().transformToUni(listOfUniResult -> Uni.combine()
                 .all()
-                .unis(reposAndBranches)
-                .with((repos) -> {
-                    List<RepositoryResultDto> result = new ArrayList<>();
-                    for (Object repo : repos) {
-                        result.add((RepositoryResultDto) repo);
+                .unis(listOfUniResult)
+                .with((listOfObjects) -> {
+                    List<RepositoryResultDto> listOfResult = new ArrayList<>();
+                    for (Object repo : listOfObjects) {
+                        listOfResult.add((RepositoryResultDto) repo);
                     }
-                    return result;
+                    return listOfResult;
                 }));
     }
 }
