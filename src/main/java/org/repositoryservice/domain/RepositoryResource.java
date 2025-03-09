@@ -27,13 +27,14 @@ public class RepositoryResource {
         Uni<List<RepositoryResultDto>> uniResult = repositoryService.getRepositories(user);
         return uniResult
                 .onItem()
-                .transform(result -> Response.ok(result).build())
-                .onFailure()
-                .recoverWithItem(this::handleFailure);
+                .transform(result -> Response.ok(result).build());
+//                .onFailure()
+//                .recoverWithItem(this::handleFailure);
     }
 
     private Response handleFailure(Throwable failure) {
-        if (failure.getMessage().contains("Not Found, status code 404")) {
+        if (failure.getMessage().contains("Not Found, status code 404")
+                && failure.getMessage().contains("getRepositories")) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(new ErrorDto("User doesn't exists", 404))
                     .build();

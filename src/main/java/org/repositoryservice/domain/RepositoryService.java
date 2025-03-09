@@ -39,7 +39,13 @@ public class RepositoryService {
             return listOfUniResult;
         });
 
-        return uniListOfUniResult.onItem().transformToUni(listOfUniResult -> Uni.combine()
+        return uniListOfUniResult.onItem().transformToUni((listOfUniResult) -> {
+
+            if(listOfUniResult.isEmpty()) {
+                return Uni.createFrom().item(new ArrayList<>());
+            }
+
+            return Uni.combine()
                 .all()
                 .unis(listOfUniResult)
                 .with((listOfObjects) -> {
@@ -48,6 +54,7 @@ public class RepositoryService {
                         listOfResult.add((RepositoryResultDto) repo);
                     }
                     return listOfResult;
-                }));
+                });
+        });
     }
 }

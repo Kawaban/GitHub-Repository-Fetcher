@@ -74,7 +74,7 @@ class RepositoryResourceTest {
 
 
                 .body("[0].name", is("repo1"))
-                .body("[0].owner", is("testuser"))
+                .body("[0].owner", is(user))
                 .body("[0].branches.size()", is(3))
                 .body("[0].branches[0].name", is("main"))
                 .body("[0].branches[0].lastCommitSha", is("commit-sha-123"))
@@ -85,14 +85,14 @@ class RepositoryResourceTest {
 
 
                 .body("[1].name", is("repo2"))
-                .body("[1].owner", is("testuser"))
+                .body("[1].owner", is(user))
                 .body("[1].branches.size()", is(1))
                 .body("[1].branches[0].name", is("main"))
                 .body("[1].branches[0].lastCommitSha", is("commit-sha-452"))
 
 
                 .body("[2].name", is("repo4"))
-                .body("[2].owner", is("testuser"))
+                .body("[2].owner", is(user))
                 .body("[2].branches.size()", is(0));
     }
 }
